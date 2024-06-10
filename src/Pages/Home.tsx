@@ -1,4 +1,5 @@
 import CardAjudante from "@/components/CardAjudante";
+import ServiçoDetalhado from "@/components/ServiçoDetalhado";
 import Valores from "@/components/Valores";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
