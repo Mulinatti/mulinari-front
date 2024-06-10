@@ -5,6 +5,7 @@ import Ajudante from "@/Pages/Ajudante";
 import Header from "@/components/Header";
 import CadastroAjudante from "@/components/CadastroAjudante"
 import CadastroServico from "@/components/CadastroServico";
+import { Toaster } from "./components/ui/sonner";
 
 const App: React.FC = () => {
   return (
@@ -21,6 +22,7 @@ const App: React.FC = () => {
             </Route>
           </Route>
         </Routes>
+        <Toaster richColors/>
       </BrowserRouter>
   );
 };

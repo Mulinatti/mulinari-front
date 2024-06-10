@@ -17,6 +17,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
+import http from "@/api/connection";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   nome: z.string().min(1, {
@@ -50,7 +52,10 @@ const CadastroAjudante = () => {
       ...ajudante,
       dataNascimento: ajudante.dataNascimento.toLocaleDateString("pt-BR"),
     };
-    console.log(ajudanteFixed);
+    
+    http.post("/ajudantes", ajudanteFixed).then(() => {
+      toast.success("Ajudante cadastrado!");
+    })
   };
 
   return (

@@ -1,10 +1,9 @@
-import CardServiço from "@/components/CardServiço";
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
 import { PencilIcon, TrashIcon } from "lucide-react";
-import CardAjudante from "./CardAjudante";
+import CardAjudante from "../components/CardAjudante";
 
-const ServiçoDetalhado = () => {
+const Servico = () => {
   return (
     <main className="w-3/4 mx-auto">
       <section className=" ml-4 flex items-center ">
@@ -32,4 +31,4 @@ const ServiçoDetalhado = () => {
   );
 };
 
-export default ServiçoDetalhado;
+export default Servico;

@@ -1,4 +1,4 @@
-import CardServiço from "@/components/CardServiço";
+import CardServico from "@/components/CardServico";
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
 import { PencilIcon, TrashIcon } from "lucide-react";
@@ -26,10 +26,10 @@ const Ajudante = () => {
         </div>
       </section>
       <section className="mt-14 space-y-4 w-full">
-        <CardServiço />
-        <CardServiço />
-        <CardServiço />
-        <CardServiço />
+        <CardServico />
+        <CardServico />
+        <CardServico />
+        <CardServico />
       </section>
     </main>
   );

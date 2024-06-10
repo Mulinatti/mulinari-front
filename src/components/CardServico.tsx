@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { DollarSign, User } from "lucide-react";
 
-const CardServiço = () => {
+const CardServico = () => {
   return (
     <Card className="ml-1 flex justify-between items-center p-8 hover:shadow-lg hover:scale-[1.01] transition-transform cursor-pointer ">
       <CardHeader className="ml-4 p-0">
@@ -25,4 +25,4 @@ const CardServiço = () => {
   );
 };
 
-export default CardServiço;
+export default CardServico;
