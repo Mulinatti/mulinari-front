@@ -1,4 +1,4 @@
-import { date, z } from "zod";
+import { z } from "zod";
 import { Button } from "./ui/button";
 import {
   Form,
@@ -62,17 +62,16 @@ const CadastroServico = () => {
     const servicoFixed = {
       ...servico,
       data: servico.data.toLocaleDateString("pt-BR"),
-      ajudantesIds: ajudantes.map((ajudante) => {
-        const ajudanteId = servico.ajudantesIds.find(
+      ajudantesIds: ajudantes.filter((ajudante) => {
+        return servico.ajudantesIds.find(
           (value) => value == ajudante.apelido
         );
-        if (ajudanteId) return ajudante.id;
-      }),
+      }).map(ajudante => ajudante.id),
     };
 
     http.post("/servicos", servicoFixed)
       .then(() => toast.success("Serviço cadastrado!"))
-      .catch(() => toast.error("Ocorreu um aconteceu!")) 
+      .catch(() => toast.error("Ocorreu um erro!")) 
   };
 
   return (
