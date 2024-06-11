@@ -1,10 +1,13 @@
 import CardAjudante from "@/components/CardAjudante";
-import ServiçoDetalhado from "@/components/ServiçoDetalhado";
 import Valores from "@/components/Valores";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import useServicoAjudante from "@/hooks/useServicoAjudante";
 
 const Home = () => {
+
+  const { ajudantes } = useServicoAjudante();
+
   return (
     <main className="w-3/4 mx-auto">
       <Valores></Valores>
@@ -15,15 +18,14 @@ const Home = () => {
         </div>
         <Input placeholder="Busque um ajudante"/>
       </section>
-      <section className=" *:mb-4">
-        <CardAjudante />
-        
-        <CardAjudante />
-        <CardAjudante />
-        <CardAjudante />
-        <CardAjudante />
-        <CardAjudante />
-        <CardAjudante />
+      <section>
+        <ul className="space-y-4">
+          {ajudantes.map(ajudante => (
+            <li key={ajudante.id}>
+              <CardAjudante ajudante={ajudante}/>
+            </li>
+          ))}
+        </ul>
       </section>
     </main>
   );

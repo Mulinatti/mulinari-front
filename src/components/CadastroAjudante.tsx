@@ -19,6 +19,7 @@ import { CalendarIcon } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 import http from "@/api/connection";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 const formSchema = z.object({
   nome: z.string().min(1, {
@@ -60,7 +61,8 @@ const CadastroAjudante = () => {
   };
 
   return (
-    <main className="w-2/4 mx-auto">
+    <main className="w-2/4 mx-auto space-y-6">
+      <Link to={"/cadastro/servico"} className="text-primary hover:underline">Ir para cadastro de serviço {"->"} </Link>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(cadastrarAjudante)}

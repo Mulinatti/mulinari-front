@@ -27,6 +27,7 @@ import {
 import useServicoAjudante from "@/hooks/useServicoAjudante";
 import http from "@/api/connection";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 const formSchema = z.object({
   rua: z.string().min(1, {
@@ -76,6 +77,7 @@ const CadastroServico = () => {
 
   return (
     <main className="w-2/4 mx-auto space-y-6">
+      <Link to={"/cadastro/ajudante"} className="text-primary hover:underline">Ir para cadastro de ajudante {"->"} </Link>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(cadastrarServico)}

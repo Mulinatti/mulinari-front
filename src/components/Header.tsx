@@ -1,6 +1,9 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 const Header = () => {
+
+  const { pathname } = useLocation();
+
   return (
     <>
       <header className="p-5 border-b border-b-border mb-10 relative  text-primary">
@@ -16,7 +19,7 @@ const Header = () => {
               Inicio
             </NavLink>
           </li>
-          <li className="font-semibold   transition-all">
+          <li className={`font-semibold ${pathname.includes("cadastro") && "underline"}   transition-all`}>
             <NavLink
               className={({ isActive }) => (isActive ? "underline" : "")}
               to={"/cadastro/servico"}
