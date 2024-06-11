@@ -55,7 +55,8 @@ const CadastroAjudante = () => {
     
     http.post("/ajudantes", ajudanteFixed).then(() => {
       toast.success("Ajudante cadastrado!");
-    })
+      form.reset();
+    }).catch(() => toast.error("Ocorreu um erro!"))
   };
 
   return (

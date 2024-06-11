@@ -72,7 +72,7 @@ const CadastroServico = () => {
 
     http.post("/servicos", servicoFixed)
       .then(() => toast.success("Serviço cadastrado!"))
-      .catch(() => toast.error("Um erro aconteceu!")) 
+      .catch(() => toast.error("Ocorreu um aconteceu!")) 
   };
 
   return (
