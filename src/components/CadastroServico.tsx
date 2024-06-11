@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { date, z } from "zod";
 import { Button } from "./ui/button";
 import {
   Form,
@@ -24,6 +24,9 @@ import {
   MultiSelectorList,
   MultiSelectorTrigger,
 } from "./ui/multi-select";
+import useServicoAjudante from "@/hooks/useServicoAjudante";
+import http from "@/api/connection";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   rua: z.string().min(1, {
@@ -32,25 +35,44 @@ const formSchema = z.object({
   bairro: z.string().min(1, {
     message: "Bairro não pode estar vazio",
   }),
-  valor: z.string().refine((value) => !Number.isNaN(parseInt(value, 10))),
-  data: z.date(),
-  ajudantes: z.array(z.string()),
+  valor: z.coerce.number({
+    invalid_type_error: "Digite apenas números",
+  }).gte(1, {
+    message: "Digite um valor válido"
+  }),
+  data: z.date({message: "Escolha uma data"}),
+  ajudantesIds: z.array(z.string()).nonempty({message: "Escolha pelo menos um ajudante"}),
 });
 
 const CadastroServico = () => {
+  const { ajudantes } = useServicoAjudante();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       rua: "",
       bairro: "",
-      valor: "",
+      valor: 0,
       data: undefined,
-      ajudantes: [],
+      ajudantesIds: [],
     },
   });
 
   const cadastrarServico = (servico: z.infer<typeof formSchema>) => {
-    console.log(servico);
+    const servicoFixed = {
+      ...servico,
+      data: servico.data.toLocaleDateString("pt-BR"),
+      ajudantesIds: ajudantes.map((ajudante) => {
+        const ajudanteId = servico.ajudantesIds.find(
+          (value) => value == ajudante.apelido
+        );
+        if (ajudanteId) return ajudante.id;
+      }),
+    };
+
+    http.post("/servicos", servicoFixed)
+      .then(() => toast.success("Serviço cadastrado!"))
+      .catch(() => toast.error("Um erro aconteceu!")) 
   };
 
   return (
@@ -93,7 +115,9 @@ const CadastroServico = () => {
               <FormItem>
                 <FormLabel>Valor do serviço</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -101,7 +125,7 @@ const CadastroServico = () => {
           />
           <FormField
             control={form.control}
-            name="ajudantes"
+            name="ajudantesIds"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Ajudantes</FormLabel>
@@ -114,15 +138,14 @@ const CadastroServico = () => {
                   </MultiSelectorTrigger>
                   <MultiSelectorContent>
                     <MultiSelectorList>
-                      <MultiSelectorItem value="Negueba">
-                        Negueba
-                      </MultiSelectorItem>
-                      <MultiSelectorItem value="Soneca">
-                        Soneca
-                      </MultiSelectorItem>
-                      <MultiSelectorItem  value="Japeri">
-                        Japeri
-                      </MultiSelectorItem>
+                      {ajudantes.map((ajudante) => (
+                        <MultiSelectorItem
+                          key={ajudante.id}
+                          value={ajudante.apelido}
+                        >
+                          {ajudante.apelido}
+                        </MultiSelectorItem>
+                      ))}
                     </MultiSelectorList>
                   </MultiSelectorContent>
                 </MultiSelector>

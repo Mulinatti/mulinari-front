@@ -6,9 +6,11 @@ import Header from "@/components/Header";
 import CadastroAjudante from "@/components/CadastroAjudante"
 import CadastroServico from "@/components/CadastroServico";
 import { Toaster } from "./components/ui/sonner";
+import { ServicoAjudanteProvider } from "./contexts/ServicoAjudanteContext";
 
 const App: React.FC = () => {
   return (
+    <ServicoAjudanteProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Header/>}>
@@ -24,6 +26,7 @@ const App: React.FC = () => {
         </Routes>
         <Toaster richColors/>
       </BrowserRouter>
+    </ServicoAjudanteProvider>
   );
 };
 
