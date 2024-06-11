@@ -14,7 +14,7 @@ const CardAjudante = ({ajudante}: CardAjudanteProps) => {
     const totalDiarias = ajudante.servicos.filter(servico => servico.pago == false).length * 90;
 
     return (
-        <Card onClick = {() => navigate(`/ajudante/id`)} className="flex hover:scale-[1.01] transition-all justify-between items-center p-8 shadow-sm hover:shadow-lg hover:cursor-pointer">
+        <Card onClick = {() => navigate(`/ajudante/${ajudante.id}`)} className="flex hover:scale-[1.01] transition-all justify-between items-center p-8 shadow-sm hover:shadow-lg hover:cursor-pointer">
           <CardTitle className="ml-2">{ajudante.apelido}</CardTitle>
           <CardContent className="flex gap-10 items-center p-0 mr-4">
             <div className="flex gap-2 items-center">

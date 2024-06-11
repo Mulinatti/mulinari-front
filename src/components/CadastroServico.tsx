@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { Calendar } from "./ui/calendar";
 import { ptBR } from "date-fns/locale";
 import {
@@ -27,7 +27,8 @@ import {
 import useServicoAjudante from "@/hooks/useServicoAjudante";
 import http from "@/api/connection";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   rua: z.string().min(1, {
@@ -36,17 +37,25 @@ const formSchema = z.object({
   bairro: z.string().min(1, {
     message: "Bairro não pode estar vazio",
   }),
-  valor: z.coerce.number({
-    invalid_type_error: "Digite apenas números",
-  }).gte(1, {
-    message: "Digite um valor válido"
-  }),
-  data: z.date({message: "Escolha uma data"}),
-  ajudantesIds: z.array(z.string()).nonempty({message: "Escolha pelo menos um ajudante"}),
+  valor: z.coerce
+    .number({
+      invalid_type_error: "Digite apenas números",
+    })
+    .gte(1, {
+      message: "Digite um valor válido",
+    }),
+  data: z.date({ message: "Escolha uma data" }),
+  ajudantesIds: z
+    .array(z.string())
+    .nonempty({ message: "Escolha pelo menos um ajudante" }),
 });
 
 const CadastroServico = () => {
-  const { ajudantes } = useServicoAjudante();
+  const { ajudantes, servicoPorId, servicos } = useServicoAjudante();
+
+  const { id } = useParams();
+
+  console.log(id);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,25 +68,56 @@ const CadastroServico = () => {
     },
   });
 
+  useEffect(() => {
+    if (id) {
+      const servico = servicoPorId(id);
+
+      console.log(servico)
+
+      if (servico)
+        form.reset({
+          rua: servico.rua,
+          bairro: servico.bairro,
+          valor: servico.valor,
+          data: parse(servico.data, "dd/MM/yyyy", new Date()),
+          ajudantesIds: servico?.ajudantes.map(
+            (ajudante) => ajudante.ajudante.apelido
+          ),
+        });
+    }
+  }, [id, servicos]);                                                                                                                                                                                                                                                                                                                                                                                                       
+
   const cadastrarServico = (servico: z.infer<typeof formSchema>) => {
     const servicoFixed = {
       ...servico,
       data: servico.data.toLocaleDateString("pt-BR"),
-      ajudantesIds: ajudantes.filter((ajudante) => {
-        return servico.ajudantesIds.find(
-          (value) => value == ajudante.apelido
-        );
-      }).map(ajudante => ajudante.id),
+      ajudantesIds: ajudantes
+        .filter((ajudante) => {
+          return servico.ajudantesIds.find(
+            (value) => value == ajudante.apelido
+          );
+        })
+        .map((ajudante) => ajudante.id),
     };
 
-    http.post("/servicos", servicoFixed)
-      .then(() => toast.success("Serviço cadastrado!"))
-      .catch(() => toast.error("Ocorreu um erro!")) 
+    if(id)
+    http
+      .put(`/servicos/${id}`, servicoFixed)
+      .then(() => toast.success("Serviço atualizado!"))
+      .catch(() => toast.error("Ocorreu um erro!"));
+    else {
+      http
+        .post("/servicos", servicoFixed)
+        .then(() => toast.success("Serviço cadastrado!"))
+        .catch(() => toast.error("Ocorreu um erro!"));
+    }
   };
 
   return (
     <main className="w-2/4 mx-auto space-y-6">
-      <Link to={"/cadastro/ajudante"} className="text-primary hover:underline">Ir para cadastro de ajudante {"->"} </Link>
+      <Link to={"/cadastro/ajudante"} className="text-primary hover:underline">
+        Ir para cadastro de ajudante {"->"}{" "}
+      </Link>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(cadastrarServico)}
@@ -116,9 +156,7 @@ const CadastroServico = () => {
               <FormItem>
                 <FormLabel>Valor do serviço</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                  />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

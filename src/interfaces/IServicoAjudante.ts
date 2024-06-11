@@ -1,7 +1,10 @@
+import IAjudante from "./IAjudante";
+import IServico from "./IServico";
+
 interface IServicoAjudante {
   id: number;
-  servico: object;
-  ajudante: object;
+  servico: IServico;
+  ajudante: IAjudante;
   pago: boolean;
 }
 
