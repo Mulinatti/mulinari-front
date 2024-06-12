@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Calendar, DollarSign, PencilIcon, TrashIcon } from "lucide-react";
+import { Calendar, DollarSign, PencilIcon } from "lucide-react";
 import CardAjudante from "../components/CardAjudante";
 import useServicoAjudante from "@/hooks/useServicoAjudante";
 import { useNavigate, useParams } from "react-router-dom";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import http from "@/api/connection";
 import { toast } from "sonner";
 import DeletarDialog from "@/components/DeletarDialog";
