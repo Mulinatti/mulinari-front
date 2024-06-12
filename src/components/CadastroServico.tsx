@@ -51,11 +51,9 @@ const formSchema = z.object({
 });
 
 const CadastroServico = () => {
-  const { ajudantes, servicoPorId, servicos } = useServicoAjudante();
+  const { ajudantes, servicoPorId, servicos, buscarDados } = useServicoAjudante();
 
   const { id } = useParams();
-
-  console.log(id);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -71,8 +69,6 @@ const CadastroServico = () => {
   useEffect(() => {
     if (id) {
       const servico = servicoPorId(id);
-
-      console.log(servico)
 
       if (servico)
         form.reset({
@@ -103,12 +99,18 @@ const CadastroServico = () => {
     if(id)
     http
       .put(`/servicos/${id}`, servicoFixed)
-      .then(() => toast.success("Serviço atualizado!"))
+      .then(() => {
+        toast.success("Serviço atualizado!");
+        buscarDados();
+      })
       .catch(() => toast.error("Ocorreu um erro!"));
     else {
       http
         .post("/servicos", servicoFixed)
-        .then(() => toast.success("Serviço cadastrado!"))
+        .then(() => {
+          toast.success("Serviço cadastrado!");
+          buscarDados();
+        })
         .catch(() => toast.error("Ocorreu um erro!"));
     }
   };
@@ -230,7 +232,7 @@ const CadastroServico = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Cadastrar</Button>
+          <Button type="submit">{id ? "Atualizar" : "Cadastrar"}</Button>
         </form>
       </Form>
     </main>

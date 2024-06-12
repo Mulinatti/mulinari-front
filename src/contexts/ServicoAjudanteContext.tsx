@@ -8,6 +8,7 @@ interface ServicoAjudanteContextProps {
   setAjudantes: React.Dispatch<React.SetStateAction<IAjudante[]>>;
   servicos: IServico[];
   setServicos: React.Dispatch<React.SetStateAction<IServico[]>>;
+  buscarDados: () => void;
 }
 
 interface ServicoAjudanteProviderProps {
@@ -23,7 +24,7 @@ export const ServicoAjudanteProvider = ({
   const [ajudantes, setAjudantes] = useState<IAjudante[]>([]);
   const [servicos, setServicos] = useState<IServico[]>([]);
 
-  useEffect(() => {
+  const buscarDados = () => {
     http.get<IAjudante[]>("/ajudantes").then((res) => {
       setAjudantes(res.data);
     });
@@ -31,11 +32,15 @@ export const ServicoAjudanteProvider = ({
     http.get<IServico[]>("/servicos").then(res => {
       setServicos(res.data);
     });
+  }
+
+  useEffect(() => {
+    buscarDados();
   }, []);
 
   return (
     <ServicoAjudanteContext.Provider
-      value={{ ajudantes, setAjudantes, servicos, setServicos }}
+      value={{ ajudantes, setAjudantes, servicos, setServicos, buscarDados }}
     >
       {children}
     </ServicoAjudanteContext.Provider>

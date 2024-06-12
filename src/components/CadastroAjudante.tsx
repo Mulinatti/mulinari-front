@@ -14,12 +14,14 @@ import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
 import { ptBR } from "date-fns/locale";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 import http from "@/api/connection";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import useServicoAjudante from "@/hooks/useServicoAjudante";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   nome: z.string().min(1, {
@@ -36,6 +38,9 @@ const formSchema = z.object({
 });
 
 const CadastroAjudante = () => {
+  const { servicos, buscarDados, ajudantePorId } = useServicoAjudante();
+
+  const { id } = useParams();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,21 +53,57 @@ const CadastroAjudante = () => {
     },
   });
 
+  useEffect(() => {
+    if (id) {
+      const ajudante = ajudantePorId(id);
+
+      if (ajudante)
+        form.reset({
+          nome: ajudante.nome,
+          apelido: ajudante.apelido,
+          motorista: ajudante.motorista,
+          dataNascimento: parse(
+            ajudante.dataNascimento,
+            "dd/MM/yyyy",
+            new Date()
+          ),
+          telefone: ajudante.telefone,
+        });
+    }
+  }, [id, servicos]);
+
   const cadastrarAjudante = (ajudante: z.infer<typeof formSchema>) => {
     const ajudanteFixed = {
       ...ajudante,
       dataNascimento: ajudante.dataNascimento.toLocaleDateString("pt-BR"),
     };
-    
-    http.post("/ajudantes", ajudanteFixed).then(() => {
-      toast.success("Ajudante cadastrado!");
-      form.reset();
-    }).catch(() => toast.error("Ocorreu um erro!"))
+
+    if (id) {
+      http
+        .put(`/ajudantes/${id}`, ajudanteFixed)
+        .then(() => {
+          toast.success("Ajudante atualizado!");
+          buscarDados();
+          form.reset();
+        })
+        .catch(() => toast.error("Ocorreu um erro!"));
+    } else {
+      http
+        .post("/ajudantes", ajudanteFixed)
+        .then(() => {
+          toast.success("Ajudante cadastrado!");
+          buscarDados();
+          form.reset();
+        })
+        .catch(() => toast.error("Ocorreu um erro!"));
+    }
   };
 
   return (
     <main className="w-2/4 mx-auto space-y-6">
-      <Link to={"/cadastro/servico"} className="text-primary hover:underline">Ir para cadastro de serviço {"->"} </Link>
+      <Link to={"/cadastro/servico"} className="text-primary hover:underline">
+        Ir para cadastro de serviço {"->"}{" "}
+      </Link>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(cadastrarAjudante)}
@@ -101,7 +142,7 @@ const CadastroAjudante = () => {
               <FormItem>
                 <FormLabel>Telefone</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} maxLength={11} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -168,7 +209,7 @@ const CadastroAjudante = () => {
               )}
             />
           </fieldset>
-          <Button type="submit">Cadastrar</Button>
+          <Button type="submit">{id ? "Atualizar" : "Cadastrar"}</Button>
         </form>
       </Form>
     </main>
