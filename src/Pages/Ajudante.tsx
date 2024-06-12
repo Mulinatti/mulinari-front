@@ -60,7 +60,7 @@ const Ajudante = () => {
           {
             ajudante?.servicos.map(servico => (
               <li key={servico.id}>
-                <CardServico servico={servico.servico}/>
+                <CardServico pago={servico.pago} ajudanteId={servico.ajudante.id} servico={servico.servico}/>
               </li>
             ))
           }

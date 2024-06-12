@@ -102,7 +102,7 @@ const CadastroAjudante = () => {
   return (
     <main className="w-2/4 mx-auto space-y-6">
       <Link to={"/cadastro/servico"} className="text-primary hover:underline">
-        Ir para cadastro de serviço {"->"}{" "}
+        Ir para cadastro de serviço {"->"}
       </Link>
       <Form {...form}>
         <form
