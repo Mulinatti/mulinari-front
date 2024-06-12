@@ -40,7 +40,7 @@ const CardServico = ({ servico, ajudanteId, pago }: CardServicoProps) => {
     <div className="relative flex items-center">
       <Card
         onClick={() => navigate(`/servico/${servico.id}`)}
-        className={`ml-1 relative flex flex-1 justify-between items-center p-8 hover:shadow-lg hover:scale-[1.01] transition-transform cursor-pointer ${pago && "ring-1 ring-emerald-500/50"}`}
+        className={`relative flex flex-1 justify-between items-center p-8 hover:shadow-lg hover:scale-[1.01] transition-transform cursor-pointer ${pago && "ring-1 ring-emerald-500/50"}`}
       >
         <CardHeader className="ml-4 p-0">
           <CardTitle>{servico.rua}</CardTitle>
@@ -68,7 +68,7 @@ const CardServico = ({ servico, ajudanteId, pago }: CardServicoProps) => {
           </div>
         </CardContent>
       </Card>
-      <Button onClick={efetuarPagamento} variant={"secondary"} className={`absolute z-10 -right-20 ${pago && "hidden"}`}>
+      <Button onClick={efetuarPagamento} variant={"secondary"} className={`absolute z-10 -right-20 ${(pago || (!pago && !ajudanteId)) && "hidden"}`}>
         Pagar
       </Button>
     </div>
