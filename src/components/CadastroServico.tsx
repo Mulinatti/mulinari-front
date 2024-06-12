@@ -102,6 +102,7 @@ const CadastroServico = () => {
       .then(() => {
         toast.success("Serviço atualizado!");
         buscarDados();
+        form.reset()
       })
       .catch(() => toast.error("Ocorreu um erro!"));
     else {
@@ -110,6 +111,7 @@ const CadastroServico = () => {
         .then(() => {
           toast.success("Serviço cadastrado!");
           buscarDados();
+          form.reset();
         })
         .catch(() => toast.error("Ocorreu um erro!"));
     }
