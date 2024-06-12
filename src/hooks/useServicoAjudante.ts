@@ -2,7 +2,7 @@ import ServicoAjudanteContext from "@/contexts/ServicoAjudanteContext";
 import { useContext } from "react";
 
 const useServicoAjudante = () => {
-  const { ajudantes, servicos } = useContext(ServicoAjudanteContext);
+  const { ajudantes, servicos, buscarDados } = useContext(ServicoAjudanteContext);
 
   const servicoPorId = (id: string) => {
     return servicos.find(servico => {
@@ -11,7 +11,15 @@ const useServicoAjudante = () => {
     });
   }
 
-  return { ajudantes, servicos, servicoPorId };
+  const ajudantePorId = (id: string | undefined) => {
+    if(id)
+      return ajudantes.find(ajudante => {
+        if(ajudante.id == parseInt(id))
+          return ajudante;
+      })
+  }
+
+  return { ajudantes, servicos, ajudantePorId, servicoPorId, buscarDados };
 };
 
 export default useServicoAjudante;

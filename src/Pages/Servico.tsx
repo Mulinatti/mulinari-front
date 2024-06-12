@@ -3,9 +3,12 @@ import { Calendar, DollarSign, PencilIcon, TrashIcon } from "lucide-react";
 import CardAjudante from "../components/CardAjudante";
 import useServicoAjudante from "@/hooks/useServicoAjudante";
 import { useNavigate, useParams } from "react-router-dom";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import http from "@/api/connection";
+import { toast } from "sonner";
 
 const Servico = () => {
-  const { ajudantes, servicos } = useServicoAjudante();
+  const { ajudantes, servicos, buscarDados } = useServicoAjudante();
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -13,6 +16,18 @@ const Servico = () => {
   const servico = servicos.find((servico) => {
     if (id) return servico.id == parseInt(id);
   });
+
+  const deletarServico = () => {
+    http.delete(`/servicos/${id}`)
+      .then(() => {
+        toast.success("Serviço deletado");
+        buscarDados();
+        navigate(-1);
+      })
+      .catch(() => {
+        toast.error("Ocorreu um erro ao deletar!");
+      })
+  }
 
   return (
     <main className="w-3/4 mx-auto">
@@ -33,9 +48,27 @@ const Servico = () => {
           <Button onClick={() => navigate(`/cadastro/servico/${servico?.id}`)} className=" bg-blue-600 w-[50px] hover:bg-blue-700">
             <PencilIcon />
           </Button>
-          <Button variant={"destructive"} className="w-[50px]">
-            <TrashIcon />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant={"destructive"} className="w-[50px]">
+                <TrashIcon />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader className="mb-4">
+                <DialogTitle>Tem certeza que deseja excluir este serviço ?</DialogTitle>
+                <DialogDescription>Não é possível reverter essa ação</DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose>
+                  <Button variant={"secondary"}>Cancelar</Button>
+                </DialogClose>
+                <DialogClose>
+                  <Button onClick={deletarServico} variant={"destructive"}>Excluir</Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </section>
       <section className="flex items-center gap-2 mt-8">

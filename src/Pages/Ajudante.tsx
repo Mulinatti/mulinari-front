@@ -1,18 +1,30 @@
+import http from "@/api/connection";
 import CardServico from "@/components/CardServico";
+import DeletarDialog from "@/components/DeletarDialog";
 import { Button } from "@/components/ui/button";
 import useServicoAjudante from "@/hooks/useServicoAjudante";
-import { Calendar, PencilIcon, Phone, TrashIcon } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { Calendar, PencilIcon, Phone } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 const Ajudante = () => {
 
-  const { ajudantes } = useServicoAjudante();
+  const { ajudantePorId, buscarDados } = useServicoAjudante();
   const { id } = useParams();
 
-  const ajudante = ajudantes.find(ajudante => {
-    if(id)
-      return ajudante.id == parseInt(id);
-  });
+  const ajudante = ajudantePorId(id);
+
+  const navigate = useNavigate();
+
+  const deletarAjudante = () => {
+    http.delete(`ajudantes/${id}`)
+      .then(() => {
+        toast.success("Ajudante deletado!");
+        buscarDados();
+        navigate(-1);
+      })
+      .catch(() => toast.error("Ocorreu um erro ao deletar!"))
+  }
 
   return (
     <main className="w-3/4 mx-auto pb-6">
@@ -37,12 +49,10 @@ const Ajudante = () => {
           </div>
         </div>
         <div className="flex ml-auto gap-2 mr-8">
-          <Button className="w-[50px]">
+          <Button onClick={() => navigate(`/cadastro/ajudante/${id}`)} className="w-[50px]">
             <PencilIcon />
           </Button>
-          <Button variant={"destructive"} className="w-[50px]">
-            <TrashIcon />
-          </Button>
+          <DeletarDialog action={deletarAjudante} titulo={`Tem certeza que deseja excluir ${ajudante?.apelido} ?`}/>
         </div>
       </section>
       <section className="mt-14 w-full">

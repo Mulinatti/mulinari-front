@@ -18,7 +18,7 @@ const Home = () => {
         </div>
         <Input placeholder="Busque um ajudante"/>
       </section>
-      <section>
+      <section className="mb-4">
         <ul className="space-y-4">
           {ajudantes.map(ajudante => (
             <li key={ajudante.id}>
